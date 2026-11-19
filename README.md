@@ -11,28 +11,36 @@ NexStream is a responsive, installable web app for discovering Anime, Manhwa, an
 ## Local development
 1. Install Node.js 20+.
 2. Run `npm install`.
-3. Install Vercel CLI and run `npx vercel dev`.
-4. Configure environment variables described below.
+3. Run `npx vercel dev`.
+4. Configure the environment variables below.
 5. Run `npm run check`.
 
 ## Environment variables
 - `DATABASE_URL`: Neon PostgreSQL connection string.
-- `ADMIN_API_KEY`: long random secret used only by trusted catalog ingestion jobs.
+- `ADMIN_API_KEY`: strong secret used only by trusted catalog sync requests.
 
-Run `database/schema.sql` against the database before using catalog APIs.
+Run `database/schema.sql` against Neon before using catalog APIs.
 
 ## API
 - `GET /api/v1/health`
 - `GET /api/v1/catalog?type=ANIME|MANHWA|FILM&page=1&limit=20`
 - `GET /api/v1/search?q=...`
 - `GET /api/v1/detail?id=...&type=...`
-- `POST /api/v1/catalog-upsert` (requires Bearer ADMIN_API_KEY)
+- `POST /api/v1/catalog-upsert` (Bearer ADMIN_API_KEY)
+- `POST /api/v1/scraper-sync` (Bearer ADMIN_API_KEY; metadata sync from one configured provider)
 
-## Catalog ingestion
-Provider adapters should normalize authorized metadata into the shared schema in `scrapers/README.md`, then submit batches to the protected ingestion endpoint. The uploaded scraper archive contains mixed CLI/module patterns and media extraction routines. Those sources are not blindly executed or exposed as public stream resolvers. Review metadata-only functionality, verify source authorization, and set secrets only in Vercel Environment Variables.
+## Scraper integration
+The supplied scraper collection is connected through server-side metadata adapters:
+- AnimeKompi → Anime catalog
+- Shinigami → Manhwa directory
+- AwaFim → Film catalog
+
+The sync endpoint accepts one source and one page per request. This keeps provider calls bounded and prevents scraper work from slowing down normal visitor requests. The website continues to read the normalized PostgreSQL catalog through `/api/v1/catalog`. See [scrapers/README.md](scrapers/README.md) for the request example.
+
+Only catalog metadata is ingested. Episode/chapter media extraction, downloads, subtitles, and direct-stream resolvers are not exposed by this integration. Additional supplied providers can be added as metadata-only adapters after their source rules and rate limits are reviewed.
 
 ## Deployment
-Import this repository into Vercel, keep the project root at the repository root, and deploy. Add `DATABASE_URL` and `ADMIN_API_KEY` in Vercel Project Settings. Execute `database/schema.sql` once in Neon.
+Import this repository into Vercel with the repository root as the project root. Add `DATABASE_URL` and `ADMIN_API_KEY` in Vercel Project Settings. Execute `database/schema.sql` once in Neon, then deploy the `main` branch.
 
 ## Current limitations
-The frontend and API/database contracts are committed, but catalog data is empty until an authorized metadata adapter is implemented and ingested. Guest watchlist is stored locally in the current browser. Authentication, cross-device sync, full detail/player workflows, and production deployment verification remain future work. This is not yet a production streaming release.
+The catalog is populated only after database setup and a successful authenticated scraper sync. This integration has not yet been verified against live provider responses or a deployed Vercel environment. Authentication, cross-device library sync, and full lawful playback integrations remain separate work.
