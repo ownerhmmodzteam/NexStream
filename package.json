@@ -1,0 +1,1 @@
+{"name":"nexstream-api","private":true,"version":"0.1.0","engines":{"node":">=20"},"scripts":{"dev":"vercel dev","check":"node --check api/v1/health.js && node --check api/v1/catalog.js && node --check api/v1/search.js"}}
