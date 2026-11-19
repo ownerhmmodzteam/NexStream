@@ -1,1 +1,1 @@
-{"functions":{"api/**/*.js":{"runtime":"nodejs20.x"}},"headers":[{"source":"/api/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=30, stale-while-revalidate=120"}]}]}
+{"functions":{"api/**/*.js":{"maxDuration":15}},"headers":[{"source":"/api/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=30, stale-while-revalidate=120"}]}]}
