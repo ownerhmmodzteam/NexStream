@@ -1,12 +1,10 @@
-# Provider adapters
+# Scraper/provider adapter integration
 
-This folder is reserved for provider-neutral metadata adapters for Anime, Manhwa, and Film.
+The web application consumes normalized catalog records from PostgreSQL. Provider adapters belong in this directory and should expose metadata-only operations for sources whose terms permit automated catalog access.
 
-Each adapter must expose a documented contract, normalize results to the shared catalog schema, honor source terms and rate limits, and be tested before registration. Use only authorized metadata/catalog sources and media endpoints. Unreviewed imported scraper modules are not loaded by the API.
+Normalized record:
+```json
+{"id":"provider:stable-id","type":"ANIME","title":"Example title","poster":"https://...","synopsis":"...","genres":["Action"],"status":"Ongoing","release_year":2026,"source_id":"provider-id","source_url":"https://authorized-source.example/title"}
+```
 
-Suggested contract:
-- `search(query, options)`
-- `catalog(options)`
-- `detail(id)`
-
-Shared normalized fields: `id`, `type`, `title`, `poster`, `synopsis`, `genres`, `status`, `updatedAt`, and `sourceId`.
+The ingestion API is `POST /api/v1/catalog-upsert` with `Authorization: Bearer $ADMIN_API_KEY` and body `{"items":[...]}`. Batch size is limited to 100. The supplied scraper ZIP contains mixed module styles and media/stream extraction methods; those files are not auto-executed. Review and adapt metadata-only functions individually, honor source terms/rate limits, and never expose private keys or unauthorized media resolvers.
