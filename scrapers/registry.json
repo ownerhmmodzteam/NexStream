@@ -1,1 +1,126 @@
-{"schemaVersion":1,"providers":[],"note":"Provider adapters are not registered until source authorization, signatures, and behavior are reviewed."}
+{
+  "schemaVersion": 1,
+  "providers": [
+    {
+      "id": "animekompi",
+      "category": "ANIME",
+      "status": "enabled",
+      "adapter": "scrapers/providers/index.js"
+    },
+    {
+      "id": "shinigami",
+      "category": "MANHWA",
+      "status": "enabled",
+      "adapter": "scrapers/providers/index.js"
+    },
+    {
+      "id": "awafim",
+      "category": "FILM",
+      "status": "enabled",
+      "adapter": "scrapers/providers/index.js"
+    },
+    {
+      "id": "alqanime",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "animein",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "animeindo",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "anisail",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "anoboy",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "kuramanime",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "nimestation",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "otakudesu",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "reanime",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "reynime",
+      "category": "ANIME",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "komiknesia",
+      "category": "MANHWA",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "komiku",
+      "category": "MANHWA",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "komiku_asia",
+      "category": "MANHWA",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "voratoon",
+      "category": "MANHWA",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "moviebox",
+      "category": "FILM",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "moviebox2",
+      "category": "FILM",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    },
+    {
+      "id": "nonton",
+      "category": "FILM",
+      "status": "disabled",
+      "reason": "Metadata adapter review required"
+    }
+  ],
+  "note": "Only the three adapters marked enabled are currently callable. Disabled entries are inventory from the supplied archive and require a metadata-only, permitted-source adapter review. Episode/chapter/media resolver code is not registered."
+}
