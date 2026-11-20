@@ -1,46 +1,42 @@
 # NexStream — Full-Stack Web App
 
-NexStream is a responsive, installable web app for discovering Anime, Manhwa, and Film. It uses a Vercel serverless Node.js backend and PostgreSQL catalog storage.
+NexStream is a Vercel-hosted website for catalog discovery across Anime, Manhwa, and Film. This repository contains website assets, serverless API functions, and metadata-only catalog adapters. Android/native application files have been removed to keep this repository focused on the website.
 
 ## Stack
-- Frontend: HTML, CSS, vanilla JavaScript, PWA service worker
+- Frontend: HTML, CSS, vanilla JavaScript, installable PWA
 - Backend: Vercel Serverless Functions (Node.js 20+)
-- Database: Neon PostgreSQL via `@neondatabase/serverless`
-- Hosting: Vercel; deploy from the `main` branch
+- Optional catalog database: Neon PostgreSQL
+- Hosting: Vercel, deploy from `main`
 
 ## Local development
 1. Install Node.js 20+.
 2. Run `npm install`.
 3. Run `npx vercel dev`.
-4. Configure the environment variables below.
-5. Run `npm run check`.
+4. Run `npm run check`.
 
-## Environment variables
-- `DATABASE_URL`: Neon PostgreSQL connection string.
-- `ADMIN_API_KEY`: strong secret used only by trusted catalog sync requests.
+## Environment
+- `DATABASE_URL`: optional Neon PostgreSQL connection string. Without it, supported metadata adapters provide live catalog/search/detail fallback.
+- `ADMIN_API_KEY`: secret for protected sync and ingestion endpoints.
 
-Run `database/schema.sql` against Neon before using catalog APIs.
+If using Neon, execute `database/schema.sql` first.
 
 ## API
 - `GET /api/v1/health`
 - `GET /api/v1/catalog?type=ANIME|MANHWA|FILM&page=1&limit=20`
 - `GET /api/v1/search?q=...`
-- `GET /api/v1/detail?id=...&type=...`
+- `GET /api/v1/detail?id=...`
 - `POST /api/v1/catalog-upsert` (Bearer ADMIN_API_KEY)
-- `POST /api/v1/scraper-sync` (Bearer ADMIN_API_KEY; metadata sync from one configured provider)
+- `POST /api/v1/scraper-sync` (Bearer ADMIN_API_KEY)
 
-## Scraper integration
-The supplied scraper collection is connected through server-side metadata adapters:
-- AnimeKompi → Anime catalog
-- Shinigami → Manhwa directory
-- AwaFim → Film catalog
+## Metadata provider fallback
+Catalog and search prefer PostgreSQL when configured; otherwise they use supported metadata adapters. When a database request fails, they fall back to live metadata. Provider calls are time-bounded, individual provider failures do not stop successful providers, and records are deduplicated.
 
-The sync endpoint accepts one source and one page per request. This keeps provider calls bounded and prevents scraper work from slowing down normal visitor requests. The website continues to read the normalized PostgreSQL catalog through `/api/v1/catalog`. See [scrapers/README.md](scrapers/README.md) for the request example.
+Detail lookup uses the database first, then falls back to a matching item from the provider's first metadata page. The current enabled adapters are AnimeKompi (Anime), Shinigami (Manhwa), and AwaFim (Film).
 
-Only catalog metadata is ingested. Episode/chapter media extraction, downloads, subtitles, and direct-stream resolvers are not exposed by this integration. Additional supplied providers can be added as metadata-only adapters after their source rules and rate limits are reviewed.
+The user-supplied scraper archive contains additional provider code. This project does not activate episode/chapter media resolvers or direct stream/download extraction. Provider terms and permission must be reviewed before enabling further metadata adapters.
+
+## Website-only scope
+`public/`, `api/`, `scrapers/`, `database/`, and `lib/` are website components. The Android folder is not part of this website and has been removed.
 
 ## Deployment
-Import this repository into Vercel with the repository root as the project root. Add `DATABASE_URL` and `ADMIN_API_KEY` in Vercel Project Settings. Execute `database/schema.sql` once in Neon, then deploy the `main` branch.
-
-## Current limitations
-The catalog is populated only after database setup and a successful authenticated scraper sync. This integration has not yet been verified against live provider responses or a deployed Vercel environment. Authentication, cross-device library sync, and full lawful playback integrations remain separate work.
+Import the repository into Vercel, set the project root to repository root, optionally configure environment variables, and deploy `main`. Catalog endpoints can operate in metadata-provider mode without Neon.
