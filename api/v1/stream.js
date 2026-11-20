@@ -21,6 +21,17 @@ async function getItem(id,type){
  const source=id.split(':',1)[0];if(!Object.prototype.hasOwnProperty.call(SOURCES,source)||!ALLOWED[source])return null;
  if(type&&SOURCES[source].type!==type)return null;const result=await scrape(source,1);return result.items.find(item=>item.id===id)||null;
 }
+async function fetchSource(url,hosts){
+ let response=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 (compatible; NexStream/1.0)','Accept':'text/html,application/xhtml+xml'},signal:AbortSignal.timeout(12000),redirect:'manual'});
+ if([301,302,303,307,308].includes(response.status)){
+  const location=response.headers.get('location');const next=location?validUrl(new URL(location,url).href,hosts):null;
+  if(!next)throw new Error('Source redirected to an unsupported host');
+  response=await fetch(next.href,{headers:{'User-Agent':'Mozilla/5.0 (compatible; NexStream/1.0)','Accept':'text/html,application/xhtml+xml'},signal:AbortSignal.timeout(12000),redirect:'manual'});
+ }
+ if(!response.ok)throw new Error('Source returned HTTP '+response.status);
+ const finalUrl=validUrl(response.url||url,hosts);if(!finalUrl)throw new Error('Source redirected to an unsupported host');
+ return {response,finalUrl};
+}
 module.exports=async(req,res)=>{
  if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'});
  const id=String(req.query.id||'').trim(),episode=String(req.query.episode||'').trim(),type=String(req.query.type||'').trim().toUpperCase();
@@ -31,10 +42,7 @@ module.exports=async(req,res)=>{
   const sourceId=String(item.source_id||id.split(':',1)[0]),hosts=ALLOWED[sourceId]||[],base=validUrl(item.source_url,hosts);
   if(!base)return res.status(422).json({error:'This provider does not expose a supported source page'});
   const target=episode?validUrl(episode,hosts):base;if(!target)return res.status(400).json({error:'Episode URL is not allowed for this provider'});
-  const response=await fetch(target.href,{headers:{'User-Agent':'Mozilla/5.0 (compatible; NexStream/1.0)','Accept':'text/html,application/xhtml+xml'},signal:AbortSignal.timeout(12000),redirect:'follow'});
-  if(!response.ok)throw new Error('Source returned HTTP '+response.status);
-  const finalUrl=validUrl(response.url,hosts);if(!finalUrl)throw new Error('Source redirected to an unsupported host');
-  const html=await response.text(),media=extractMedia(html,finalUrl.href);
+  const {response,finalUrl}=await fetchSource(target.href,hosts),html=await response.text(),media=extractMedia(html,finalUrl.href);
   return res.status(200).json({id:item.id,title:item.title,type:item.type,source:sourceId,sourceUrl:finalUrl.href,episodes:episode?[]:extractLinks(html,finalUrl.href),embeds:media.embeds,videos:media.videos,video:media.videos[0]||null});
  }catch(error){console.error('stream_provider_error',error.message);return res.status(502).json({error:'Unable to load stream data from this provider'});}
 };
