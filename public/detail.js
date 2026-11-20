@@ -1,1 +1,25 @@
-const root=document.querySelector('#detail');const id=new URLSearchParams(location.search).get('id');async function load(){if(!id){root.textContent='Missing title id';return}try{const r=await fetch('/api/v1/detail?id='+encodeURIComponent(id));const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load title');const x=d.item;root.innerHTML='';const wrap=document.createElement('section');wrap.className='feature-strip';const poster=document.createElement('div');poster.className='poster';poster.style.width='220px';poster.style.flex='0 0 220px';poster.textContent=(x.title||'N')[0];if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';poster.append(img)}const copy=document.createElement('div');copy.style.flex='1';const tag=document.createElement('span');tag.className='eyebrow';tag.textContent=x.type;const h=document.createElement('h1');h.textContent=x.title;h.style.fontFamily='Manrope';const p=document.createElement('p');p.textContent=x.synopsis||'No synopsis available.';p.style.color='var(--muted)';p.style.lineHeight='1.8';const save=document.createElement('button');save.className='btn btn-primary';save.textContent='＋ Add to library';save.onclick=()=>{const list=JSON.parse(localStorage.getItem('nexstream:saved')||'[]');if(!list.some(a=>a.id===x.id)){list.push(x);localStorage.setItem('nexstream:saved',JSON.stringify(list))}save.textContent='✓ Saved'};copy.append(tag,h,p,save);wrap.append(poster,copy);root.append(wrap)}catch(e){root.textContent=e.message}}load();
+'use strict';
+const root=document.querySelector('#detail');
+const id=new URLSearchParams(location.search).get('id');
+const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node};
+async function load(){
+ if(!id){root.textContent='Missing title id';return}
+ try{
+  const response=await fetch('/api/v1/detail?id='+encodeURIComponent(id),{cache:'no-store'});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'Unable to load title');
+  const item=data.item;root.replaceChildren();
+  const section=el('section','detail-layout');
+  const poster=el('div','detail-poster');
+  if(item.poster){const img=el('img');img.src=item.poster;img.alt='';img.onerror=()=>img.remove();poster.append(img)}else poster.append(el('span','poster-fallback',(item.title||'N')[0]));
+  const copy=el('div','detail-copy');copy.append(el('span','eyebrow',item.type||'TITLE'),el('h1','',item.title||'Untitled'));
+  const meta=[item.status,item.release_year,item.genres?.slice?.(0,3).join(' · ')].filter(Boolean).join('  /  ');
+  if(meta)copy.append(el('p','detail-meta',meta));
+  copy.append(el('p','detail-synopsis',item.synopsis||'Synopsis is not available yet.'));
+  const actions=el('div','detail-actions');
+  if(item.type==='ANIME'||item.type==='FILM'){const watch=el('a','btn btn-primary','Watch now  ↗');watch.href='/stream.html?id='+encodeURIComponent(item.id);actions.append(watch)}
+  if(item.type==='MANHWA'&&item.source_url){const read=el('a','btn btn-primary','Read chapters  ↗');read.href=item.source_url;read.target='_blank';read.rel='noopener noreferrer';actions.append(read)}
+  const save=el('button','btn btn-secondary','＋ Save to library');save.type='button';save.addEventListener('click',()=>{let list=[];try{list=JSON.parse(localStorage.getItem('nexstream:saved')||'[]')}catch{}if(!list.some(x=>x.id===item.id)){list.push(item);localStorage.setItem('nexstream:saved',JSON.stringify(list))}save.textContent='✓ Saved';});actions.append(save);copy.append(actions);
+  section.append(poster,copy);root.append(section);
+ }catch(error){root.replaceChildren(el('div','empty-state',error.message))}
+}
+load();

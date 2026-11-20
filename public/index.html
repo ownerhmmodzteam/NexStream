@@ -2,30 +2,30 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111116"><meta name="description" content="NexStream — discover Anime, Manhwa, and Film">
+<meta name="theme-color" content="#101114"><meta name="description" content="NexStream — stories worth your time.">
 <link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css"><title>NexStream</title>
+<link rel="stylesheet" href="/styles.css?v=20261120-editorial-1"><link rel="stylesheet" href="/editorial.css?v=20261120-editorial-1"><title>NexStream</title>
 </head>
 <body>
-<div class="backdrop"></div><div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
-<header class="topbar glass">
-<a class="brand" href="/" aria-label="NexStream home"><span class="brand-mark">n</span><span class="brand-name">nexstream</span></a>
-<nav class="desktop-nav" aria-label="Main navigation"><button class="nav-link active" data-route="home">Discover</button><button class="nav-link" data-route="anime">Anime</button><button class="nav-link" data-route="manhwa">Manhwa</button><button class="nav-link" data-route="film">Film</button></nav>
-<div class="top-actions"><label class="searchbox glass-soft"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search anything" autocomplete="off"><kbd>⌘ K</kbd></label><button class="avatar glass-soft" id="libraryBtn" aria-label="Open library">R</button></div>
+<header class="topbar">
+<a class="brand" href="/" aria-label="NexStream home"><span class="brand-mark">N</span><span class="brand-name">NEXSTREAM</span></a>
+<nav class="desktop-nav" aria-label="Main navigation">
+<button class="nav-link active" data-route="home">Discover</button><button class="nav-link" data-route="anime">Anime</button><button class="nav-link" data-route="manhwa">Manhwa</button><button class="nav-link" data-route="film">Film</button><a class="nav-link" href="/stream.html">Stream</a>
+</nav>
+<div class="top-actions"><label class="searchbox"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search titles" autocomplete="off"></label><button class="avatar" id="libraryBtn" aria-label="Open library">R</button></div>
 </header>
-<main id="app" class="shell">
-<section class="hero glass">
-<div class="hero-copy"><span class="eyebrow"><span class="eyebrow-dot"></span> A LITTLE ESCAPE, ANYTIME</span><h1>Find your next<br><span>favorite world.</span></h1><p>Stories, characters, and worlds worth getting lost in — all in one place.</p><div class="hero-actions"><button class="btn btn-primary" data-route="anime">Start exploring <span>↗</span></button><button class="btn btn-secondary" data-route="library">Saved collection</button></div></div>
-<div class="hero-visual"><div class="visual-glow"></div><div class="visual-orb orb-one"></div><div class="visual-orb orb-two"></div><div class="visual-panel panel-back"><span>DISCOVER</span><div class="panel-shape shape-a"></div><b>Stories<br>unfold.</b></div><div class="visual-panel panel-front"><div class="panel-shape shape-b"></div><span>YOUR MOMENT</span><b>Escape<br>the ordinary.</b><small>One more chapter.</small></div><div class="floating-chip glass-soft"><span class="chip-icon">✦</span><span><b>Curated for you</b><small>Explore something new</small></span></div></div>
-<div class="hero-bottom"><span>01 / DISCOVER</span><span class="hero-line"></span><span>ANIME · MANHWA · FILM</span></div></section>
-<section class="category-row"><button class="cat-pill selected" data-route="home"><span class="cat-icon">✦</span> Everything</button><button class="cat-pill" data-route="anime"><span class="cat-icon">◉</span> Anime</button><button class="cat-pill" data-route="manhwa"><span class="cat-icon">▤</span> Manhwa</button><button class="cat-pill" data-route="film"><span class="cat-icon">▣</span> Film</button></section>
-<section class="section-head"><div><span class="eyebrow">THE LIBRARY</span><h2 id="sectionTitle">A world to step into.</h2><p id="sectionDesc">A little inspiration for your next watch or read.</p></div><div class="section-status"><span class="live-dot"></span><span id="resultCount">Loading collection</span></div></section>
-<div id="catalog" class="catalog-grid"><div class="loading-card glass"><span class="loader"></span><p>Gathering your collection…</p></div></div>
-<section class="feature-strip glass"><div class="strip-icon">✧</div><div><span class="eyebrow">YOUR OWN CORNER</span><h2>Keep the stories you love close.</h2><p>Save a title to your library and come back whenever you feel like it.</p></div><button class="btn btn-secondary" data-route="library">Open library <span>↗</span></button></section>
-<footer><a class="brand brand-small" href="/"><span class="brand-mark">n</span><span class="brand-name">nexstream</span></a><span>Made for stories. © <span id="year"></span></span><span class="footer-status"><i></i> Ready to explore</span></footer>
+<main class="shell" id="app">
+<section class="hero">
+<div class="hero-copy"><span class="eyebrow">YOUR NEXT STORY STARTS HERE</span><h1>Good stories<br><em>stay with you.</em></h1><p>Find a series to follow, a chapter to finish, or a film for tonight.</p><div class="hero-actions"><button class="btn btn-primary" data-route="anime">Explore anime <span>↗</span></button><a class="btn btn-secondary" href="/stream.html">Open stream</a></div><div class="hero-meta"><span>ANIME</span><i></i><span>MANHWA</span><i></i><span>FILM</span></div></div>
+<div class="hero-art" id="featuredArt"><div class="hero-art-placeholder"><span>N</span></div><div class="hero-art-caption"><small>EDITOR'S PICK</small><b id="featuredTitle">A new world awaits</b><span id="featuredType">Explore the collection</span></div></div>
+</section>
+<section class="category-row" aria-label="Browse categories"><button class="cat-pill selected" data-route="home">All titles</button><button class="cat-pill" data-route="anime">Anime</button><button class="cat-pill" data-route="manhwa">Manhwa</button><button class="cat-pill" data-route="film">Film</button></section>
+<section class="section-head"><div><span class="eyebrow">THE COLLECTION</span><h2 id="sectionTitle">Find something worth your time.</h2><p id="sectionDesc">A fresh place to start.</p></div><div class="section-status"><span class="live-dot"></span><span id="resultCount">Loading titles</span></div></section>
+<div id="catalog" class="catalog-grid"><div class="loading-card"><span class="loader"></span><p>Loading collection…</p></div></div>
+<footer><a class="brand brand-small" href="/"><span class="brand-mark">N</span><span class="brand-name">NEXSTREAM</span></a><span>Made for stories. © <span id="year"></span></span><a href="/stream.html">Go to Stream ↗</a></footer>
 </main>
-<nav class="mobile-dock glass"><button class="dock-item active" data-route="home"><span>⌂</span><small>Home</small></button><button class="dock-item" data-route="anime"><span>◉</span><small>Anime</small></button><button class="dock-item" data-route="manhwa"><span>▤</span><small>Manhwa</small></button><button class="dock-item" data-route="film"><span>▣</span><small>Film</small></button><button class="dock-item" data-route="library"><span>♡</span><small>Library</small></button></nav>
-<div id="toast" class="toast glass" role="status" aria-live="polite"></div><script src="/app.js" defer></script>
+<nav class="mobile-dock" aria-label="Mobile navigation"><button class="dock-item active" data-route="home"><span>⌂</span><small>Home</small></button><button class="dock-item" data-route="anime"><span>◉</span><small>Anime</small></button><button class="dock-item" data-route="manhwa"><span>▤</span><small>Manhwa</small></button><a class="dock-item" href="/stream.html"><span>▷</span><small>Stream</small></a><button class="dock-item" data-route="library"><span>♡</span><small>Saved</small></button></nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div><script src="/app.js?v=20261120-editorial-1" defer></script>
 </body></html>
